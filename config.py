@@ -6,11 +6,15 @@ import os
 #First is Canvas Related Config Information
 danasToken = "***REMOVED***"
 sis_import_Token = "***REMOVED***"
-CanvasSISImportToken = danasToken
+danaDec1Token = "***REMOVED***"
+#CanvasSISImportToken = sis_import_Token
+CanvasSISImportToken = danaDec1Token
 
 
 Canvas_account_id = 1
-Canvas_base_api_url = 'https://ecasd.test.instructure.com/api/'
+Canvas_base_api_url = 'https://ecasd.instructure.com/api/'
+#The write version is for imports and anything else that is written to Canvas to make sure accidents don't happen
+Canvas_base_api_url_write = 'https://ecasd.test.instructure.com/api/'
 
 #This section is Google Related Config Information
 SECRETS_FILE = "C:\Temp\GoogleSpreadsheettoCanvasPythn-8a3815cd54b0.json"

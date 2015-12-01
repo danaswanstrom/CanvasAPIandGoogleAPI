@@ -27,7 +27,7 @@ def createZip(subAccountNumber):
 
 def sisIMPORT(subAccountNumber):
     path = 'v1/accounts/{account_id}/sis_imports'
-    url = Canvas_base_api_url + path.format(account_id=Canvas_account_id)
+    url = Canvas_base_api_url_write + path.format(account_id=Canvas_account_id)
     files = {'attachment': open('{csvExportLocation}canvasUpload-{subAccountNumber}.zip'.format(csvExportLocation = csvExportLocation,
                                                                                             subAccountNumber = subAccountNumber), 'rb')}
     headers = {'Authorization':'Bearer {token}'.format(token=CanvasSISImportToken)}
@@ -41,7 +41,7 @@ def sis_import_status():
     """
     ### Get status of last SIS imports
     path = 'v1/accounts/{account_id}/sis_imports'
-    url = Canvas_base_api_url + path.format(account_id=Canvas_account_id)
+    url = Canvas_base_api_url_write + path.format(account_id=Canvas_account_id)
     headers = {'Authorization':'Bearer {token}'.format(token=CanvasSISImportToken)}
     r = requests.get(url, headers=headers)
     rJson = r.json()
