@@ -51,8 +51,8 @@ def importSheet(workbookName):
     firstSheet = workbook.sheet1
     # Extract all data into a dataframe
     firstSheetDataFrame = pd.DataFrame(firstSheet.get_all_records())
-    lowercaseColumnNames = [x.lower() for x in firstSheetDataFrame.columns.values]
-    firstSheetDataFrame.columns = lowercaseColumnNames
+    #lowercaseColumnNames = [x.lower() for x in firstSheetDataFrame.columns.values]
+    #firstSheetDataFrame.columns = lowercaseColumnNames
     return firstSheetDataFrame
 
 
