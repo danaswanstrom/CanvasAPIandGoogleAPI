@@ -59,7 +59,11 @@ def find_sis_user_id(search_term):
     headers = {'Authorization':'Bearer {token}'.format(token=CanvasSISImportToken)}
     r = requests.get(url, headers=headers)
     rJson = r.json()
-    return int(rJson[0]['sis_user_id'])
+    try:
+        sis_id = int(rJson[0]['sis_user_id'])
+    except:
+        sis_id = 'Unknown'
+    return sis_id
     
     
     
