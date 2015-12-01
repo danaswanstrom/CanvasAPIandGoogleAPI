@@ -161,6 +161,91 @@ def coursesVertDF(workbookName,accountID):
     return courses
 
 
+def enrollmentsVertDF(workbookName):
+    """
+    Inputs: Name of a Google Spreadsheet that has been shared with the account whose Oauth Credentials are used in this script.
+        
+    Variables needed for this function:
+    Global Variables:
+    lowercaseColumnNames: this contains a list of the column names from the imported Google spreadsheet where all letters 
+    are converted to lowercase
+    columnsEnrollmentCSV: list of the column names needed for the Canvas import
+    
+    Helper Functions:
+    importSheet()
+    
+    Returns: dataframe called enrollments
+    
+    """
+    index = 0
+    importedGoogleSheet = importSheet(workbookName)
+    importedGoogleSheet['Course_ID'] = importedGoogleSheet['Course_ID'].str.lower()
+    importedGoogleSheet = importedGoogleSheet.set_index('Course_ID')
+    
+    index = 0
+    lowercaseRowNames = importedGoogleSheet.index.values.tolist()
+    #lowercaseColumnNames = importedGoogleSheet.columns
+    #create an empty dataframe based on the required columns for a Canvas csv.
+    enrollments = pd.DataFrame(data=np.zeros((0,len(columnsEnrollmentCSV))), columns=columnsEnrollmentCSV)
+        
+    #For enrollments to be created for a course, the course must have a name given in the Google spreadsheet. 
+    #Next line checks for blank course names.
+    for course in importedGoogleSheet.columns:
+        if importedGoogleSheet.loc['course_name',course] != '':
+            for x in range(1,len(importedGoogleSheet.index.values.tolist())):
+                possibleRowName = "principal" + str(x)
+                if possibleRowName in lowercaseRowNames and importedGoogleSheet.loc[possibleRowName,course] != '':
+                    sis_id = find_sis_user_id(importedGoogleSheet.loc[possibleRowName,course])
+                    
+                    if sis_id != 'Unknown':
+                        enrollments = enrollments.append({'course_id':course,
+                                                          'user_id':sis_id,'role':'Teacher',
+                                                          'status':'active'},
+                                                         ignore_index=True)
+                    else:
+                        enrollments = enrollments.append({'course_id':course,
+                                                          'user_id':999998,'role':'Student',
+                                                          'status':'active'},
+                                                         ignore_index=True)  
+    
+    for course in importedGoogleSheet.columns:
+        if importedGoogleSheet.loc['course_name',course] != '':
+            for x in range(1,len(importedGoogleSheet.index.values.tolist())):
+                possibleRowName = "teacher" + str(x)
+                if possibleRowName in lowercaseRowNames and importedGoogleSheet.loc[possibleRowName,course] != '':
+                    sis_id = find_sis_user_id(importedGoogleSheet.loc[possibleRowName,course])
+                    
+                    if sis_id != 'Unknown':
+                        enrollments = enrollments.append({'course_id':course,
+                                                          'user_id':sis_id,'role':'Teacher',
+                                                          'status':'active'},
+                                                         ignore_index=True)
+                    else:
+                        enrollments = enrollments.append({'course_id':course,
+                                                          'user_id':999998,'role':'Student',
+                                                          'status':'active'},
+                                                         ignore_index=True)  
+    
+    
+    for course in importedGoogleSheet.columns:
+        if importedGoogleSheet.loc['course_name',course] != '':
+            for x in range(1,len(importedGoogleSheet.index.values.tolist())):
+                possibleRowName = "student" + str(x)
+                if possibleRowName in lowercaseRowNames and importedGoogleSheet.loc[possibleRowName,course] != '':
+                    sis_id = find_sis_user_id(importedGoogleSheet.loc[possibleRowName,course])
+                    
+                    if sis_id != 'Unknown':
+                        enrollments = enrollments.append({'course_id':course,
+                                                          'user_id':sis_id,'role':'Student',
+                                                          'status':'active'},
+                                                         ignore_index=True)
+                    else:
+                        enrollments = enrollments.append({'course_id':course,
+                                                          'user_id':999998,'role':'Student',
+                                                          'status':'active'},
+                                                         ignore_index=True)  
+    
+    return enrollments
 
 
 
@@ -171,6 +256,17 @@ def createCSVsCoursesEnrollmentsTerms(workbookName, AccountID):
     """   
     enrollments = enrollmentsDF(workbookName)
     courses = coursesDF(workbookName, AccountID)
+    enrollments.to_csv(csvExportLocation +"enrollments.csv", index=False, float_format='%.0f')
+    courses.to_csv(csvExportLocation +"courses.csv", index=False, float_format='%.0f')
+    return print("Done with CSV Files. Files located in " + csvExportLocation)
+
+def createCSVsCoursesEnrollmentsTermsVert(workbookName, AccountID):
+    """
+    This fuction will take in Google Spreadsheet name.
+    Return: A list of lists composed of each row of the spread
+    """   
+    enrollments = enrollmentsVertDF(workbookName)
+    courses = coursesVertDF(workbookName, AccountID)
     enrollments.to_csv(csvExportLocation +"enrollments.csv", index=False, float_format='%.0f')
     courses.to_csv(csvExportLocation +"courses.csv", index=False, float_format='%.0f')
     return print("Done with CSV Files. Files located in " + csvExportLocation)
