@@ -48,7 +48,8 @@ def enrollmentsDF(workbookName):
         
     Variables needed for this function:
     Global Variables:
-    lowercaseColumnNames: this contains a list of the column names from the imported Google spreadsheet where all letters are converted to lowercase
+    lowercaseColumnNames: this contains a list of the column names from the imported Google spreadsheet where all letters 
+    are converted to lowercase
     columnsEnrollmentCSV: list of the column names needed for the Canvas import
     
     Helper Functions:
@@ -82,30 +83,36 @@ def enrollmentsDF(workbookName):
                     
                     sis_id = find_sis_user_id(importedGoogleSheet.loc[index,possibleColumnName])
                     #sis_id = canvasStaffandStudentsIndexed.loc[importedGoogleSheet.loc[index,possibleColumnName],'user_id']
-                    enrollments = enrollments.append({'course_id':importedGoogleSheet.loc[index,"course_id"], 'user_id':sis_id,'role':'Teacher',  'status':'active'},ignore_index=True)
+                    enrollments = enrollments.append({'course_id':importedGoogleSheet.loc[index,"course_id"],
+                                                      'user_id':sis_id,'role':'Teacher',  'status':'active'},ignore_index=True)
                 except: 
                     if importedGoogleSheet.loc[index,possibleColumnName] != '': 
-                        enrollments = enrollments.append({'course_id':importedGoogleSheet.loc[index,"course_id"], 'user_id':999998,'role':'Student',  'status':'active'},ignore_index=True)
+                        enrollments = enrollments.append({'course_id':importedGoogleSheet.loc[index,"course_id"],
+                                                          'user_id':999998,'role':'Student',  'status':'active'},ignore_index=True)
         
         for x in range(1,len(importedGoogleSheet.columns)):
             possibleColumnName = "teacher" + str(x)
             if possibleColumnName in lowercaseColumnNames:
                 try:
                     sis_id = find_sis_user_id(importedGoogleSheet.loc[index,possibleColumnName])
-                    enrollments = enrollments.append({'course_id':importedGoogleSheet.loc[index,"course_id"], 'user_id':sis_id,'role':'Teacher',  'status':'active'},ignore_index=True)
+                    enrollments = enrollments.append({'course_id':importedGoogleSheet.loc[index,"course_id"],
+                                                      'user_id':sis_id,'role':'Teacher',  'status':'active'},ignore_index=True)
                 except:
                     if importedGoogleSheet.loc[index,possibleColumnName] != '':
-                        enrollments = enrollments.append({'course_id':importedGoogleSheet.loc[index,"course_id"], 'user_id':999998,'role':'Student',  'status':'active'},ignore_index=True)
+                        enrollments = enrollments.append({'course_id':importedGoogleSheet.loc[index,"course_id"],
+                                                          'user_id':999998,'role':'Student',  'status':'active'},ignore_index=True)
         
         for x in range(1,len(importedGoogleSheet.columns)):
             possibleColumnName = "student" + str(x)
             if possibleColumnName in lowercaseColumnNames:
                 try:
                     sis_id = find_sis_user_id(importedGoogleSheet.loc[index,possibleColumnName])
-                    enrollments = enrollments.append({'course_id':importedGoogleSheet.loc[index,"course_id"], 'user_id':sis_id,'role':'Student',  'status':'active'},ignore_index=True)
+                    enrollments = enrollments.append({'course_id':importedGoogleSheet.loc[index,"course_id"],
+                                                      'user_id':sis_id,'role':'Student',  'status':'active'},ignore_index=True)
                 except:
                     if importedGoogleSheet.loc[index,possibleColumnName] != '':
-                        enrollments = enrollments.append({'course_id':importedGoogleSheet.loc[index,"course_id"], 'user_id':999998,'role':'Student',  'status':'active'},ignore_index=True)
+                        enrollments = enrollments.append({'course_id':importedGoogleSheet.loc[index,"course_id"],
+                                                          'user_id':999998,'role':'Student',  'status':'active'},ignore_index=True)
         
         #index counter takes us through each row of the dataframe
         index +=1
@@ -118,9 +125,7 @@ def createCSVsCoursesEnrollmentsTerms(workbookName, AccountID):
     """
     This fuction will take in Google Spreadsheet name.
     Return: A list of lists composed of each row of the spread
-    """
-    terms = importSheet("terms")
-    terms.to_csv(csvExportLocation +"terms.csv", index=False, float_format='%.0f')
+    """   
     enrollments = enrollmentsDF(workbookName)
     courses = coursesDF(workbookName, AccountID)
     enrollments.to_csv(csvExportLocation +"enrollments.csv", index=False, float_format='%.0f')
