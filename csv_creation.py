@@ -91,7 +91,6 @@ def enrollmentsDF(workbookName):
             if possibleColumnName in lowercaseColumnNames:
                              
                 try:
-                    
                     sis_id = find_sis_user_id(importedGoogleSheet.loc[index,possibleColumnName])
                     #sis_id = canvasStaffandStudentsIndexed.loc[importedGoogleSheet.loc[index,possibleColumnName],'user_id']
                     enrollments = enrollments.append({'course_id':importedGoogleSheet.loc[index,"course_id"],
