@@ -34,10 +34,18 @@ def coursesDF(workbookName,accountID):
     Returns: dataframe called enrollments
     """
     importedGoogleSheet = importSheet(workbookName)
+    
+    #Next two lines make the columns names all lowercase
+    lowercaseColumnNames = [x.lower() for x in importedGoogleSheet.columns.values]
+    importedGoogleSheet.columns = lowercaseColumnNames
+    
     index = 0
     courses = pd.DataFrame(data=np.zeros((0,len(columnsCoursesCSV))), columns=columnsCoursesCSV)
     while index < len(importedGoogleSheet.index) and importedGoogleSheet.course_name[index] != '':
-        courses = courses.append({'course_id':importedGoogleSheet.loc[index,"course_id"], 'long_name':importedGoogleSheet.loc[index,"course_name"],'short_name':importedGoogleSheet.loc[index,"course_name"], 'account_id':accountID, 'status':'active'},ignore_index=True)
+        courses = courses.append({'course_id':importedGoogleSheet.loc[index,"course_id"],
+                                  'long_name':importedGoogleSheet.loc[index,"course_name"],
+                                  'short_name':importedGoogleSheet.loc[index,"course_name"], 
+                                  'account_id':accountID, 'status':'active'},ignore_index=True)
         index += 1
     return courses
 
@@ -60,8 +68,11 @@ def enrollmentsDF(workbookName):
     """
     index = 0
     importedGoogleSheet = importSheet(workbookName)
+    #Next two lines make the columns names all lowercase
+    lowercaseColumnNames = [x.lower() for x in importedGoogleSheet.columns.values]
+    importedGoogleSheet.columns = lowercaseColumnNames
     
-    lowercaseColumnNames = importedGoogleSheet.columns
+    #lowercaseColumnNames = importedGoogleSheet.columns
     #create an empty dataframe based on the required columns for a Canvas csv.
     enrollments = pd.DataFrame(data=np.zeros((0,len(columnsEnrollmentCSV))), columns=columnsEnrollmentCSV)
         
@@ -119,6 +130,32 @@ def enrollmentsDF(workbookName):
     
     
     return enrollments
+
+
+def coursesVertDF(workbookName,accountID):
+    """
+    Inputs: Name of a Google Spreadsheet that has been shared with the account whose Oauth Credentials are used in this script
+    and an accountID for canvas. The Google Spreadsheet needs to be organized in a vertical orientation.
+    
+    Variables needed for this function:
+    Global Variables:
+    columnsCoursesCSV: list of the column names needed for the Canvas import
+    
+    Helper Functions:
+    importSheet()
+    
+    Returns: dataframe called courses
+    """
+    importedGoogleSheet = importSheet(workbookName)
+    index = 0
+    courses = pd.DataFrame(data=np.zeros((0,len(columnsCoursesCSV))), columns=columnsCoursesCSV)
+    while index < len(importedGoogleSheet.index) and importedGoogleSheet.course_name[index] != '':
+        courses = courses.append({'course_id':importedGoogleSheet.loc[index,"course_id"], 'long_name':importedGoogleSheet.loc[index,"course_name"],'short_name':importedGoogleSheet.loc[index,"course_name"], 'account_id':accountID, 'status':'active'},ignore_index=True)
+        index += 1
+    return courses
+
+
+
 
 
 def createCSVsCoursesEnrollmentsTerms(workbookName, AccountID):
