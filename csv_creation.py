@@ -147,11 +147,17 @@ def coursesVertDF(workbookName,accountID):
     Returns: dataframe called courses
     """
     importedGoogleSheet = importSheet(workbookName)
+    importedGoogleSheet['Course_ID'] = importedGoogleSheet['Course_ID'].str.lower()
     index = 0
     courses = pd.DataFrame(data=np.zeros((0,len(columnsCoursesCSV))), columns=columnsCoursesCSV)
-    while index < len(importedGoogleSheet.index) and importedGoogleSheet.course_name[index] != '':
-        courses = courses.append({'course_id':importedGoogleSheet.loc[index,"course_id"], 'long_name':importedGoogleSheet.loc[index,"course_name"],'short_name':importedGoogleSheet.loc[index,"course_name"], 'account_id':accountID, 'status':'active'},ignore_index=True)
-        index += 1
+    importedGoogleSheet = importedGoogleSheet.set_index('Course_ID')
+    
+    for course in importedGoogleSheet.columns:
+        if importedGoogleSheet.loc['course_name',course] != '':
+            courses = courses.append({'course_id': course,
+                                      'long_name':importedGoogleSheet.loc['course_name',course],
+                                      'short_name':importedGoogleSheet.loc['course_name',course], 
+                                      'account_id':accountID, 'status':'active'},ignore_index=True)
     return courses
 
 
