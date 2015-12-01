@@ -2,6 +2,7 @@ from google_connect import *
 from config import *
 import pandas as pd
 import numpy as np
+from canvas_api import *
 import json
 import csv
 
@@ -40,6 +41,7 @@ def coursesDF(workbookName,accountID):
         index += 1
     return courses
 
+
 def enrollmentsDF(workbookName):
     """
     Inputs: Name of a Google Spreadsheet that has been shared with the account whose Oauth Credentials are used in this script.
@@ -62,7 +64,8 @@ def enrollmentsDF(workbookName):
     #create an empty dataframe based on the required columns for a Canvas csv.
     enrollments = pd.DataFrame(data=np.zeros((0,len(columnsEnrollmentCSV))), columns=columnsEnrollmentCSV)
         
-    #For enrollments to be created for a course, the course must have a name given in the Google spreadsheet. Next line checks for blank course names.
+    #For enrollments to be created for a course, the course must have a name given in the Google spreadsheet. 
+    #Next line checks for blank course names.
     while index < len(importedGoogleSheet.index) and importedGoogleSheet.course_name[index] != '':
         #Three sections of code to add principals (which get added as teachers), teachers, and then students
         #The range for each section is based on the number of columns in the original google sheet
@@ -74,8 +77,11 @@ def enrollmentsDF(workbookName):
         for x in range(1,len(importedGoogleSheet.columns)):
             possibleColumnName = "principal" + str(x)
             if possibleColumnName in lowercaseColumnNames:
+                             
                 try:
-                    sis_id = canvasStaffandStudentsIndexed.loc[importedGoogleSheet.loc[index,possibleColumnName],'user_id']
+                    
+                    sis_id = find_sis_user_id(importedGoogleSheet.loc[index,possibleColumnName])
+                    #sis_id = canvasStaffandStudentsIndexed.loc[importedGoogleSheet.loc[index,possibleColumnName],'user_id']
                     enrollments = enrollments.append({'course_id':importedGoogleSheet.loc[index,"course_id"], 'user_id':sis_id,'role':'Teacher',  'status':'active'},ignore_index=True)
                 except: 
                     if importedGoogleSheet.loc[index,possibleColumnName] != '': 
@@ -85,7 +91,7 @@ def enrollmentsDF(workbookName):
             possibleColumnName = "teacher" + str(x)
             if possibleColumnName in lowercaseColumnNames:
                 try:
-                    sis_id = canvasStaffandStudentsIndexed.loc[importedGoogleSheet.loc[index,possibleColumnName],'user_id']
+                    sis_id = find_sis_user_id(importedGoogleSheet.loc[index,possibleColumnName])
                     enrollments = enrollments.append({'course_id':importedGoogleSheet.loc[index,"course_id"], 'user_id':sis_id,'role':'Teacher',  'status':'active'},ignore_index=True)
                 except:
                     if importedGoogleSheet.loc[index,possibleColumnName] != '':
@@ -95,7 +101,7 @@ def enrollmentsDF(workbookName):
             possibleColumnName = "student" + str(x)
             if possibleColumnName in lowercaseColumnNames:
                 try:
-                    sis_id = canvasStaffandStudentsIndexed.loc[importedGoogleSheet.loc[index,possibleColumnName],'user_id']
+                    sis_id = find_sis_user_id(importedGoogleSheet.loc[index,possibleColumnName])
                     enrollments = enrollments.append({'course_id':importedGoogleSheet.loc[index,"course_id"], 'user_id':sis_id,'role':'Student',  'status':'active'},ignore_index=True)
                 except:
                     if importedGoogleSheet.loc[index,possibleColumnName] != '':
