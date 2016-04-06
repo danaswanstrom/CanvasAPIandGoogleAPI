@@ -17,12 +17,12 @@ Canvas_base_api_url = 'https://ecasd.instructure.com/api/'
 Canvas_base_api_url_write = 'https://ecasd.test.instructure.com/api/'
 
 #This section is Google Related Config Information
-SECRETS_FILE = "C:\Temp\GoogleSpreadsheettoCanvasPythn-8a3815cd54b0.json"
+SECRETS_FILE = '/Users/dswanstrom/Documents/GitHub Local/SchoolProjects/CanvasAPI/Tokens/GoogleSpreadsheettoCanvasPythn-8a3815cd54b0.json'
 
 #Define location of the CSV file exports. Must have a trailing "/" for it to work.
       
 path = os.getcwd()
-csvExportLocation = "{path}\\CSVZipFiles\\".format(path = path)
+csvExportLocation = '{path}\\CSVZipFiles\\'.format(path = path)
 #csvExportLocation = "X:/Inbox/"
 
 

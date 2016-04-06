@@ -1,13 +1,8 @@
 
-#Connection to Google
-
-#Code to import all of the functions that we will need
-
-from config import *
 import gspread
-from oauth2client.client import SignedJwtAssertionCredentials
 import pandas as pd
-import numpy as np
+from oauth2client.client import SignedJwtAssertionCredentials
+import config
 import json
 
 
@@ -15,7 +10,7 @@ import json
 #information for this section came from http://pbpython.com/pandas-google-forms-part1.html
 
 SCOPE = ["https://spreadsheets.google.com/feeds"]
-json_key = json.load(open(SECRETS_FILE))
+json_key = json.load(open(config.SECRETS_FILE))
 credentials = SignedJwtAssertionCredentials(json_key['client_email'],
 bytes(json_key['private_key'], 'UTF-8'),
 SCOPE)
