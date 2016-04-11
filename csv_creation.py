@@ -1,6 +1,7 @@
 import numpy as np
 import pandas as pd
 import canvas_api
+import config
 import google_connect
 
 
@@ -10,6 +11,8 @@ import google_connect
 
 def coursesDF(workbookName,accountID):
     """
+    Testing April 6 2016 Good
+
     Inputs: Name of a Google Spreadsheet that has been shared with
     the account whose Oauth Credentials are used in this script
     and an accountID for canvas.
@@ -27,11 +30,11 @@ def coursesDF(workbookName,accountID):
     importedGoogleSheet = google_connect.importSheet(workbookName)
     
     #Next two lines make the columns names all lowercase
-    lowercaseColumnNames = [x.lower() for x in importedGoogleSheet.columns.values]
+    lowercaseColumnNames = [x.lower() for x in importedGoogleSheet.columns]
     importedGoogleSheet.columns = lowercaseColumnNames
     
     index = 0
-    courses = pd.DataFrame(data=np.zeros((0, len(canvas_api.columnsCoursesCSV))), columns=canvas_api.columnsCoursesCSV)
+    courses = pd.DataFrame(data=np.zeros((0, len(config.columnsCoursesCSV))), columns=config.columnsCoursesCSV)
     spreadsheet_length = len(importedGoogleSheet.index)
     while index < spreadsheet_length and importedGoogleSheet.course_name[index] != '':
         courses = courses.append({'course_id':importedGoogleSheet.loc[index,"course_id"],
@@ -44,6 +47,8 @@ def coursesDF(workbookName,accountID):
 
 def enrollmentsDF(workbookName):
     """
+    Testing April 6, 2016 No errors but many unknown values for empty cells in the spreadsheet
+
     Inputs: Name of a Google Spreadsheet that has been shared with the account
     whose Oauth Credentials are used in this script.
         
@@ -61,14 +66,14 @@ def enrollmentsDF(workbookName):
     """
     index = 0
     importedGoogleSheet = google_connect.importSheet(workbookName)
-    #Next two lines make the columns names all lowercase
-    lowercaseColumnNames = [x.lower() for x in importedGoogleSheet.columns.values]
+    # Next two lines make the columns names all lowercase
+    lowercaseColumnNames = [x.lower() for x in importedGoogleSheet.columns]
     importedGoogleSheet.columns = lowercaseColumnNames
     spreadsheet_length = len(importedGoogleSheet.index)
-    #lowercaseColumnNames = importedGoogleSheet.columns
-    #create an empty dataframe based on the required columns for a Canvas csv.
-    enrollments = pd.DataFrame(data=np.zeros((0, len(canvas_api.columnsEnrollmentCSV))),
-                               columns=canvas_api.columnsEnrollmentCSV)
+    # lowercaseColumnNames = importedGoogleSheet.columns
+    # create an empty dataframe based on the required columns for a Canvas csv.
+    enrollments = pd.DataFrame(data=np.zeros((0, len(config.columnsEnrollmentCSV))),
+                               columns=config.columnsEnrollmentCSV)
         
     #For enrollments to be created for a course, the course must have a name given in the Google spreadsheet. 
     #Next line checks for blank course names.
@@ -133,6 +138,8 @@ def enrollmentsDF(workbookName):
 
 def coursesVertDF(workbookName,accountID):
     """
+    Testing April 6, 2016 Good
+
     Inputs: Name of a Google Spreadsheet that has been shared with the account
     whose Oauth Credentials are used in this script
     and an accountID for canvas. The Google Spreadsheet needs to be organized in a vertical orientation.
@@ -149,7 +156,7 @@ def coursesVertDF(workbookName,accountID):
     importedGoogleSheet = google_connect.importSheet(workbookName)
     importedGoogleSheet['Course_ID'] = importedGoogleSheet['Course_ID'].str.lower()
     index = 0
-    courses = pd.DataFrame(data=np.zeros((0, len(canvas_api.columnsCoursesCSV))), columns=canvas_api.columnsCoursesCSV)
+    courses = pd.DataFrame(data=np.zeros((0, len(config.columnsCoursesCSV))), columns=config.columnsCoursesCSV)
     importedGoogleSheet = importedGoogleSheet.set_index('Course_ID')
     
     for course in importedGoogleSheet.columns:
@@ -163,6 +170,8 @@ def coursesVertDF(workbookName,accountID):
 
 def enrollmentsVertDF(workbookName):
     """
+    Testing April 6, 2016 Good
+
     Inputs: Name of a Google Spreadsheet that has been shared with the account
     whose Oauth Credentials are used in this script.
         
@@ -180,20 +189,28 @@ def enrollmentsVertDF(workbookName):
     
     """
     index = 0
+
+    # Get sheet as dataframe
     importedGoogleSheet = google_connect.importSheet(workbookName)
+
+    # Want all row names to be lowercase
     importedGoogleSheet['Course_ID'] = importedGoogleSheet['Course_ID'].str.lower()
+
+    # Set row names of the spreadsheet to be the index.
     importedGoogleSheet = importedGoogleSheet.set_index('Course_ID')
     
     index = 0
     lowercaseRowNames = importedGoogleSheet.index.values.tolist()
-    #lowercaseColumnNames = importedGoogleSheet.columns
-    #create an empty dataframe based on the required columns for a Canvas csv.
-    enrollments = pd.DataFrame(data=np.zeros((0, len(canvas_api.columnsEnrollmentCSV))),
-                               columns=canvas_api.columnsEnrollmentCSV)
+
+    # create an empty dataframe based on the required columns for a Canvas csv.
+    enrollments = pd.DataFrame(data=np.zeros((0, len(config.columnsEnrollmentCSV))),
+                               columns=config.columnsEnrollmentCSV)
         
-    #For enrollments to be created for a course, the course must have a name given in the Google spreadsheet. 
-    #Next line checks for blank course names.
+    # For enrollments to be created for a course, the course must have a name given in the Google spreadsheet.
+
     for course in importedGoogleSheet.columns:
+
+        # Check to see if there is a course
         if importedGoogleSheet.loc['course_name',course] != '':
             for x in range(1,len(importedGoogleSheet.index.values.tolist())):
                 possibleRowName = "principal" + str(x)
@@ -259,9 +276,9 @@ def createCSVsCoursesEnrollmentsTerms(workbookName, AccountID):
     """   
     enrollments = enrollmentsDF(workbookName)
     courses = coursesDF(workbookName, AccountID)
-    enrollments.to_csv(canvas_api.csvExportLocation + "enrollments.csv", index=False, float_format='%.0f')
-    courses.to_csv(canvas_api.csvExportLocation + "courses.csv", index=False, float_format='%.0f')
-    return print("Done with CSV Files. Files located in " + canvas_api.csvExportLocation)
+    enrollments.to_csv(config.csvExportLocation + "enrollments.csv", index=False, float_format='%.0f')
+    courses.to_csv(config.csvExportLocation + "courses.csv", index=False, float_format='%.0f')
+    return print("Done with CSV Files. Files located in " + config.csvExportLocation)
 
 def createCSVsCoursesEnrollmentsTermsVert(workbookName, AccountID):
     """
@@ -270,9 +287,9 @@ def createCSVsCoursesEnrollmentsTermsVert(workbookName, AccountID):
     """   
     enrollments = enrollmentsVertDF(workbookName)
     courses = coursesVertDF(workbookName, AccountID)
-    enrollments.to_csv(canvas_api.csvExportLocation + "enrollments.csv", index=False, float_format='%.0f')
-    courses.to_csv(canvas_api.csvExportLocation + "courses.csv", index=False, float_format='%.0f')
-    return print("Done with CSV Files. Files located in " + canvas_api.csvExportLocation)
+    enrollments.to_csv(config.csvExportLocation + "enrollments.csv", index=False, float_format='%.0f')
+    courses.to_csv(config.csvExportLocation + "courses.csv", index=False, float_format='%.0f')
+    return print("Done with CSV Files. Files located in " + config.csvExportLocation)
 
 
 

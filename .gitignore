@@ -47,5 +47,6 @@ Temporary Items
 .project
 .pydevproject
 Tokens/GoogleSpreadsheettoCanvasPythn-8a3815cd54b0 2.json
-__pycache__/*
+__pycache__/
 .ipynb_ch*
+CSVZipFiles/

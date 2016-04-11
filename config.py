@@ -7,7 +7,9 @@ import os
 danasToken = "***REMOVED***"
 sis_import_Token = "***REMOVED***"
 danaDec1Token = "***REMOVED***"
-#CanvasSISImportToken = sis_import_Token
+
+
+#Most code in other modules will use CanvasSISImportToken, so this is a way to switch tokens behind the scences
 CanvasSISImportToken = danaDec1Token
 
 
@@ -22,7 +24,8 @@ SECRETS_FILE = '/Users/dswanstrom/Documents/GitHub Local/SchoolProjects/CanvasAP
 #Define location of the CSV file exports. Must have a trailing "/" for it to work.
       
 path = os.getcwd()
-csvExportLocation = '{path}\\CSVZipFiles\\'.format(path = path)
+
+csvExportLocation = '{path}/CSVZipFiles/'.format(path = path)
 #csvExportLocation = "X:/Inbox/"
 
 
