@@ -4,13 +4,8 @@ import os
 
 
 #First is Canvas Related Config Information
-danasToken = "***REMOVED***"
-sis_import_Token = "***REMOVED***"
-danaDec1Token = "***REMOVED***"
 
-
-#Most code in other modules will use CanvasSISImportToken, so this is a way to switch tokens behind the scences
-CanvasSISImportToken = danaDec1Token
+CanvasSISImportToken = "Use your own Token"
 
 
 Canvas_account_id = 1
